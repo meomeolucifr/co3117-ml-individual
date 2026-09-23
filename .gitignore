@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Raw dataset is large and redistributable from source; do not commit
+data/raw/
+
+results/figures/*.png
+!results/figures/.gitkeep
