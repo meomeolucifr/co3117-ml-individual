@@ -9,6 +9,8 @@ cited where relevant. Update as work proceeds.
   Engineering, HCMUT, VNU-HCM.
 - Sample CO3117 final examination, question sheet code 504, Semester 2 2025–2026,
   26 May 2026.
+- CO3117 lecture slides (HCMUT, 10 Aug 2026): "ML Introduction" and "Decision Trees" -
+  used for `docs/pre-release/PRE_RELEASE_CATCHUP.md`.
 
 ## Dataset
 
