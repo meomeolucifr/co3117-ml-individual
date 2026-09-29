@@ -20,29 +20,22 @@ Any scaler, encoder, or feature selection should also be fitted only on the trai
 
 Finally, the test set should remain untouched until the final comparison. All model tuning and decisions should be based only on the training and validation sets.
 
-**Train/validation-curve diagnosis.** Ran a Decision Tree (`sklearn.tree.DecisionTreeClassifier`)
-on the HAR training population with `max_depth` swept from 1 to 20, using a subject-aware
-split (`GroupShuffleSplit` on `subject_train.txt`, seed 2452879) so no subject leaks
-between the fit and validation portions. Script:
-`experiments/part1_pre_midterm/foundations_learning_curve.py`; data:
-`results/foundations_learning_curve.csv`; figure:
-`results/figures/foundations_learning_curve.png`.
+I ran a Decision Tree on the HAR training population, with max_depth from 1 to 20. I used a subject-aware split with GroupShuffleSplit on subject_train.txt (seed 2452879), so no subject appeared in both the training and validation sets. The script is at experiments/part1_pre_midterm/foundations_learning_curve.py, with the results in results/foundations_learning_curve.csv and the figure in results/figures/foundations_learning_curve.png.
 
-| max_depth | Train Macro-F1 | Val Macro-F1 |
-|---|---|---|
-| 1  | 0.231 | 0.224 |
-| 3  | 0.713 | 0.688 |
-| 8  | 0.981 | **0.858** (best) |
-| 12 | 0.996 | 0.816 |
-| 20 | 1.000 | 0.834 |
+|max_depth|Train Macro-F1|Val Macro-F1|
+|-|-|-|
+|1|0.231|0.224|
+|3|0.713|0.688|
+|8|0.981|**0.858**|
+|12|0.996|0.816|
+|20|1.000|0.834|
 
-At `max_depth=1–2` both curves are low and close together - classic underfitting (the
-tree is too shallow to separate 6 activities). From `max_depth≈8` onward, train Macro-F1
-keeps climbing toward 1.0 while validation Macro-F1 stops improving and starts
-oscillating - the train/val gap widens from ~0.12 at depth 8 to ~0.17 at depth 20, the
-textbook overfitting signature. `max_depth=8` gives the best validation score observed
-in this sweep and is the depth I'd pick as a starting capacity for the Decision Tree
-catch-up build task, before any pruning.
+At max_depth = 1–2, both training and validation Macro-F1 are low and close to each other. This indicates underfitting because the tree is too shallow to separate the 6 activities effectively.
+
+Around max_depth = 8, validation Macro-F1 reaches its highest value of 0.858. After that, training Macro-F1 keeps increasing toward 1.0, but validation Macro-F1 stops improving and starts to fluctuate. The gap between training and validation performance also grows from about 0.12 at depth 8 to about 0.17 at depth 20. This is a sign of overfitting, where the tree keeps fitting the training data more closely without improving its performance on unseen subjects.
+
+Based on this, max_depth = 8 is a reasonable starting point for the Decision Tree catch-up build before applying further pruning or hyperparameter tuning.
+
 
 ## Decision Tree (Chapter 2)
 

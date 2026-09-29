@@ -1,0 +1,3 @@
+model,macro_f1,accuracy
+own OneVsRestPerceptron,0.9632860164336045,0.9635922330097088
+sklearn Perceptron,0.9734146832062677,0.9737864077669903

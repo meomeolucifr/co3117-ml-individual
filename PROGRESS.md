@@ -5,8 +5,8 @@ in under two minutes without searching the repository.
 
 | Period | Topic | Post | Drill | First evidence | Revision commit | Tag | Status |
 |---|---|---|---|---|---|---|---|
-| W01–W04 | PRE-RELEASE catch-up (Foundations + Decision Tree) | [docs/pre-release/PRE_RELEASE_CATCHUP.md](docs/pre-release/PRE_RELEASE_CATCHUP.md) | [exercises/release-baseline-w01-w02.pdf](exercises/) | current-date baseline | catch-up corrections | `release-baseline` | PRE-RELEASE - TODO |
-| W05 | Perceptron / Delta rule + repository onboarding | [docs/weekly/w05-perceptron-delta.md](docs/weekly/) | [exercises/w05-first-attempt.pdf](exercises/) | pre-ref / pre-AI commit | post-ref commit | `w05` | ACTIVE - TODO |
+| W01–W04 | PRE-RELEASE catch-up (Foundations + Decision Tree) | [docs/pre-release/PRE_RELEASE_CATCHUP.md](docs/pre-release/PRE_RELEASE_CATCHUP.md) | [exercises/release-baseline-w01-w02.pdf](exercises/) | `5dd4266` (scaffold) | `325b9bb` (catch-up post + diagnostic) | `release-baseline` | PRE-RELEASE - DONE |
+| W05 | Perceptron / Delta rule + repository onboarding | [docs/weekly/w05-perceptron-delta.md](docs/weekly/) | [exercises/w05-first-attempt.pdf](exercises/) | `ef80e85` (drill), `4eaf678` (pre-ref code) | `c91f395` (post-ref + experiment) | `w05` | DONE |
 | W06 | Artificial Neural Networks / backprop | - | - | - | - | `w06` | NOT STARTED |
 | W07 | Bayesian learning / Naive Bayes | - | - | - | - | `w07` | NOT STARTED |
 | W07-close | Genetic Algorithm + BN/TAN + Part I closeout | - | - | - | - | `part1-final` | NOT STARTED |
