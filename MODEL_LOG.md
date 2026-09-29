@@ -1,4 +1,4 @@
-# MODEL_LOG.md — per-model record
+# MODEL_LOG.md - per-model record
 
 One section per model family. Fill in as each week's work is committed.
 

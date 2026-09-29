@@ -1,6 +1,6 @@
 # Dataset
 
-**Source:** UCI Machine Learning Repository — Human Activity Recognition Using Smartphones
+**Source:** UCI Machine Learning Repository - Human Activity Recognition Using Smartphones
 DOI: 10.24432/C54S4K
 https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
 
@@ -21,16 +21,16 @@ ordered sequence per subject to exploit temporal continuity.
 2. Unzip into `data/raw/`, then unzip the nested `UCI HAR Dataset.zip` so that
    `data/raw/UCI HAR Dataset/` contains `train/`, `test/`, `features.txt`,
    `activity_labels.txt`, `README.txt`.
-3. `data/raw/` is gitignored (large, redistributable from source) — every teammate/grader
+3. `data/raw/` is gitignored (large, redistributable from source) - every teammate/grader
    re-downloads it rather than pulling it from Git history.
 
 ## Structure (as provided by UCI)
 
-- `train/X_train.txt`, `train/y_train.txt`, `train/subject_train.txt` — 7352 samples, 21 subjects
-- `test/X_test.txt`, `test/y_test.txt`, `test/subject_test.txt` — 2947 samples, 9 subjects
-- `features.txt` — names of the 561 precomputed time/frequency-domain features
-- `activity_labels.txt` — integer-to-label mapping (1=WALKING ... 6=LAYING)
-- `*/Inertial Signals/` — raw 128-reading windows per axis, used for from-scratch
+- `train/X_train.txt`, `train/y_train.txt`, `train/subject_train.txt` - 7352 samples, 21 subjects
+- `test/X_test.txt`, `test/y_test.txt`, `test/subject_test.txt` - 2947 samples, 9 subjects
+- `features.txt` - names of the 561 precomputed time/frequency-domain features
+- `activity_labels.txt` - integer-to-label mapping (1=WALKING ... 6=LAYING)
+- `*/Inertial Signals/` - raw 128-reading windows per axis, used for from-scratch
   feature/derivation work rather than the precomputed 561-feature vectors alone
 
 ## Split policy (frozen at R0)

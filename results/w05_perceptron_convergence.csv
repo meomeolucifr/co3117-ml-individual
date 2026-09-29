@@ -1,0 +1,9 @@
+n_flipped_labels,converged,n_epochs_run,train_accuracy
+0,True,2,1.0
+1,False,200,0.9917
+2,False,200,0.9833
+3,False,200,0.9833
+5,False,200,0.9583
+8,False,200,0.85
+12,False,200,0.9
+20,False,200,0.8333

@@ -1,8 +1,8 @@
-# CO3117 — Individual Longitudinal Assignment (Two-Part Version)
+# CO3117 - Individual Longitudinal Assignment (Two-Part Version)
 
-**Student:** Nguyễn Thiện Nhân — 2452879
+**Student:** Nguyễn Thiện Nhân - 2452879
 **Course:** CO3117 Machine Learning, HK261
-**Design:** One dataset, one use case, many models — release-adapted for HK261 (release: Course Week 5, 23 Sep 2026).
+**Design:** One dataset, one use case, many models - release-adapted for HK261 (release: Course Week 5, 23 Sep 2026).
 
 ## Use case
 
@@ -46,4 +46,4 @@ Then follow [data/README.md](data/README.md) to download and unzip the dataset i
 - Commit message pattern: `[W05][theory] ...`, `[W05][code] ...`, `[W05][review] ...`.
 - Tags: `release-baseline` (R0), `w05`...`w15` (weekly, `w08-midterm` for midterm week),
   `part1-final` (14 Oct 2026), `part2-final` (final-exam minus 2 days).
-- No back-dated commits or fabricated W01–W04 history — see [docs/pre-release/PRE_RELEASE_CATCHUP.md](docs/pre-release/PRE_RELEASE_CATCHUP.md).
+- No back-dated commits or fabricated W01–W04 history - see [docs/pre-release/PRE_RELEASE_CATCHUP.md](docs/pre-release/PRE_RELEASE_CATCHUP.md).
