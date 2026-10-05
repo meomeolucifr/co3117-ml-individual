@@ -1,27 +1,27 @@
-# PROGRESS.md - instructor dashboard
+# PROGRESS
 
-One row per Course Week. W01–W04 are PRE-RELEASE; W08 is MIDTERM. Links should resolve
-in under two minutes without searching the repository.
+One row per Course Week. Post and Drill are relative links; First evidence and Revision commit are
+commit hashes (at least 7 characters). `python tools/check.py` verifies every row up to the current week.
 
 | Period | Topic | Post | Drill | First evidence | Revision commit | Tag | Status |
 |---|---|---|---|---|---|---|---|
-| W01–W04 | PRE-RELEASE catch-up (Foundations + Decision Tree) | [docs/pre-release/PRE_RELEASE_CATCHUP.md](docs/pre-release/PRE_RELEASE_CATCHUP.md) | [exercises/release-baseline-w01-w02.pdf](exercises/) | `5dd4266` (scaffold) | `325b9bb` (catch-up post + diagnostic) | `release-baseline` | PRE-RELEASE - DONE |
-| W05 | Perceptron / Delta rule + repository onboarding | [docs/weekly/w05-perceptron-delta.md](docs/weekly/) | [exercises/w05-first-attempt.pdf](exercises/) | `ef80e85` (drill), `4eaf678` (pre-ref code) | `c91f395` (post-ref + experiment) | `w05` | DONE |
-| W06 | Artificial Neural Networks / backprop | - | - | - | - | `w06` | NOT STARTED |
-| W07 | Bayesian learning / Naive Bayes | - | - | - | - | `w07` | NOT STARTED |
-| W07-close | Genetic Algorithm + BN/TAN + Part I closeout | - | - | - | - | `part1-final` | NOT STARTED |
-| W08 | MIDTERM (16 Oct 2026) - protected week | - | midterm rehearsal | - | - | `w08-midterm` | NOT STARTED |
-| W09 | Hidden Markov Model | - | - | - | - | `w09` | NOT STARTED |
-| W10 | SVM: maximum margin, soft margin | - | - | - | - | `w10` | NOT STARTED |
-| W11 | Kernel SVM, cross-model comparison | - | - | - | - | `w11` | NOT STARTED |
-| W12 | PCA, curse of dimensionality | - | - | - | - | `w12` | NOT STARTED |
-| W13 | LDA, feature engineering | - | - | - | - | `w13` | NOT STARTED |
-| W14 | Bagging, Boosting, AdaBoost | - | - | - | - | `w14` | NOT STARTED |
-| W15 | Generative vs discriminative, MaxEnt, CRF, final synthesis | - | - | - | - | `part2-final` | NOT STARTED |
+| W01-W04 | PRE-RELEASE catch-up (Foundations, Decision Tree) | [catch-up](docs/pre-release/PRE_RELEASE_CATCHUP.md) | [release baseline](exercises/release-baseline-w01-w02.pdf) | 5dd4266 | 325b9bb | release-baseline | PRE-RELEASE |
+| W05 | Perceptron, Delta Rule & Neural Networks (ANN) + onboarding | [post](docs/weekly/w05-perceptron-delta.md) | [drill](exercises/w05-first-attempt.pdf) | ef80e85 | 217e8d3 | w05 | ACTIVE |
+| W06 | Bayesian learning / Naive Bayes |  |  |  |  | w06 |  |
+| W07 | Genetic Algorithms & Bayesian Networks (TAN), Part I closeout |  |  |  |  | w07, part1-final |  |
+| W08 | MIDTERM (16 Oct) |  |  | n/a | n/a | w08-midterm | MIDTERM |
+| W09 | HMM / sequence modelling |  |  |  |  | w09 |  |
+| W10 | SVM: maximum and soft margin |  |  |  |  | w10 |  |
+| W11 | Kernel SVM, cross-model comparison |  |  |  |  | w11 |  |
+| W12 | PCA, curse of dimensionality |  |  |  |  | w12 |  |
+| W13 | LDA, feature engineering |  |  |  |  | w13 |  |
+| W14 | Bagging, boosting, AdaBoost |  |  |  |  | w14 |  |
+| W15 | Generative vs discriminative, Logistic/MaxEnt, CRF, synthesis |  |  |  |  | w15, part2-final |  |
 
-## Key dates
+Status values: PRE-RELEASE (W01-W04), ACTIVE (current week), DONE (tag pushed), MIDTERM (W08).
+W08: link the compact entry and the timed rehearsal if you have them (for example `docs/weekly/w08-midterm.md`,
+`exercises/w08-rehearsal.pdf`); the two-state commit rule does not apply.
 
-- R0 setup gate: due before W05 class + 1 day
-- Part I due: **14 Oct 2026** (two days before midterm on 16 Oct 2026)
-- Midterm: **16 Oct 2026**
-- Part II due: two calendar days before the official final exam date (TBD)
+Example of a completed row:
+
+`| W05 | Perceptron, Delta Rule & ANN | [post](docs/weekly/w05-perceptron-ann.md) | [drill](exercises/w05-first-attempt.pdf) | 3f9c2ab | 8d41e07 | w05 | DONE |`
