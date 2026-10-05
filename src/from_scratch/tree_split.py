@@ -12,16 +12,50 @@ import numpy as np
 
 
 def entropy(y):
-    raise NotImplementedError
+    _, counts = np.unique(y, return_counts=True)
+    p = counts / len(y)
+    return -np.sum(p * np.log2(p))
 
 
 def gini(y):
-    raise NotImplementedError
+    _, counts = np.unique(y, return_counts=True)
+    p = counts / len(y)
+    return 1 - np.sum(p ** 2)
 
 
 def information_gain(y, mask):
-    raise NotImplementedError
+    n = len(y)
+    y_left = y[mask]
+    y_right = y[~mask]
+
+    weighted_entropy = 0.0
+
+    if len(y_left) > 0:
+        weighted_entropy += (len(y_left) / n) * entropy(y_left)
+
+    if len(y_right) > 0:
+        weighted_entropy += (len(y_right) / n) * entropy(y_right)
+
+    return entropy(y) - weighted_entropy
 
 
 def best_threshold(x, y):
-    raise NotImplementedError
+    values = np.unique(x)
+
+    if len(values) == 1:
+        return None, 0.0
+
+    thresholds = (values[:-1] + values[1:]) / 2
+
+    best_t = None
+    best_gain = -np.inf
+
+    for t in thresholds:
+        mask = x <= t
+        gain = information_gain(y, mask)
+
+        if gain > best_gain:
+            best_gain = gain
+            best_t = t
+
+    return best_t, best_gain
