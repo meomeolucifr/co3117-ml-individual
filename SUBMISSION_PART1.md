@@ -1,7 +1,7 @@
 # SUBMISSION PART 1
 
 - Tag: part1-final
-- Commit (full hash): TODO - fill in with the exact commit this tag points to, right before tagging
+- Commit (full hash): 4268fb6c03058bc2b29560d041ed66fb510401a6
 - Report: report/part1_summary.pdf
 - Two-A4 exam sheet: exam/a4-notes-part1-midterm.pdf
 - Reproduce: `python -m venv .venv && pip install -r requirements.txt`, then
