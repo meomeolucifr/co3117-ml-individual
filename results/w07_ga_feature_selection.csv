@@ -1,0 +1,4 @@
+seed,best_fitness,n_features_selected,best_generation,n_generations_run,stopping_reason,runtime_s
+2452879,0.9063218337195303,204,100,100,max_generations,301.5
+1,0.921739324125516,185,100,100,max_generations,263.0
+2,0.9023855350928962,212,100,100,max_generations,289.0

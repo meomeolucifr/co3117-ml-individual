@@ -4,6 +4,8 @@ protocol. Runs 3 independent seeds, same subject-aware fit/validation split for 
 
 Run: python experiments/part1_pre_midterm/w07_ga_feature_selection.py
 """
+import gc
+import json
 import sys
 import time
 from pathlib import Path
@@ -25,6 +27,20 @@ from src.from_scratch.genetic_algorithm import GeneticFeatureSelection  # noqa: 
 SPLIT_SEED = 2452879
 GA_SEEDS = [2452879, 1, 2]
 
+RESULTS_DIR = ROOT / "results"
+CSV_PATH = RESULTS_DIR / "w07_ga_feature_selection.csv"
+HISTORY_PATH = RESULTS_DIR / "w07_ga_feature_selection_history.json"
+
+
+def _load_progress():
+    """Resume support: a previous run may have crashed partway (e.g. low system
+    memory) after completing some seeds. Reuse those instead of re-running them."""
+    rows, histories = [], {}
+    if CSV_PATH.exists() and HISTORY_PATH.exists():
+        rows = pd.read_csv(CSV_PATH).to_dict("records")
+        histories = {int(k): v for k, v in json.loads(HISTORY_PATH.read_text()).items()}
+    return rows, histories
+
 
 def run():
     X, y, subjects = load_train()
@@ -36,10 +52,15 @@ def run():
     X_val, y_val = X_arr[val_idx], y_arr[val_idx]
     assert set(subjects.iloc[fit_idx]) & set(subjects.iloc[val_idx]) == set()
 
-    rows = []
-    histories = {}
+    RESULTS_DIR.mkdir(exist_ok=True)
+    rows, histories = _load_progress()
+    done_seeds = {r["seed"] for r in rows}
 
     for seed in GA_SEEDS:
+        if seed in done_seeds:
+            print(f"seed={seed}: already done (resumed from disk), skipping")
+            continue
+
         t0 = time.perf_counter()
         ga = GeneticFeatureSelection(
             population_size=50, n_generations=100, patience=20, seed=seed,
@@ -47,7 +68,6 @@ def run():
         ga.fit(X_fit, y_fit, X_val, y_val)
         elapsed = time.perf_counter() - t0
 
-        final_pop_unique = None  # computed below from history if needed
         rows.append({
             "seed": seed,
             "best_fitness": ga.best_fitness_,
@@ -61,19 +81,21 @@ def run():
         print(f"seed={seed}: best_fitness={ga.best_fitness_:.4f}, "
               f"n_features={ga.n_features_selected_}, "
               f"gens={ga.n_generations_run_} ({ga.stopping_reason_}), "
-              f"runtime={elapsed:.1f}s")
+              f"runtime={elapsed:.1f}s", flush=True)
+
+        # Persist after every seed so a later crash (e.g. low system memory) loses
+        # at most one seed's work, and free the fitted estimator before the next seed.
+        pd.DataFrame(rows).to_csv(CSV_PATH, index=False)
+        HISTORY_PATH.write_text(json.dumps(histories))
+        del ga
+        gc.collect()
 
     df = pd.DataFrame(rows)
     print("\n" + df.to_string(index=False))
+    print(f"\nSaved {CSV_PATH}")
 
-    results_dir = ROOT / "results"
-    figures_dir = results_dir / "figures"
-    results_dir.mkdir(exist_ok=True)
+    figures_dir = RESULTS_DIR / "figures"
     figures_dir.mkdir(exist_ok=True)
-
-    csv_path = results_dir / "w07_ga_feature_selection.csv"
-    df.to_csv(csv_path, index=False)
-    print(f"\nSaved {csv_path}")
 
     # Convergence plot: best-so-far fitness per generation, one line per seed
     fig, ax = plt.subplots(figsize=(7, 5))
