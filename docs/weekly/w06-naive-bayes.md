@@ -53,15 +53,13 @@ informative.
 
 ## E. Failure / misconception
 
-Own `GaussianNB` matches sklearn's `GaussianNB` exactly (100% prediction agreement on
-HAR), confirming the implementation is correct - but at default settings it only reaches
-Macro-F1 0.768, well below the Perceptron baseline's 0.963. The failure mode is
-systematic, not random: the single biggest confusion is STANDING predicted as SITTING
-(169 of 463 errors). This is the naive conditional-independence assumption breaking down
-in practice - the 561 HAR features include many correlated signals (e.g. several axes of
-the same sensor), and treating them as independent given the class double-counts
-correlated evidence, hurting exactly the pair of classes (SITTING/STANDING) whose
-feature distributions overlap most.
+Own `GaussianNB` matches sklearn's exactly (100% prediction agreement on HAR), confirming
+correctness - but at default settings it only reaches Macro-F1 0.768, well below the
+Perceptron's 0.963. The failure is systematic: the biggest confusion is STANDING predicted
+as SITTING (169/463 errors). This is the independence assumption breaking down - HAR's 561
+features include many correlated signals (e.g. several axes of the same sensor), and
+treating them as independent double-counts evidence, hurting exactly the class pair whose
+distributions overlap most.
 
 ## F. Written-exam capsule
 
@@ -76,15 +74,17 @@ estimate can dominate the whole product and break the model on unseen data.
 ## G. Reflection
 
 Before this week I could state Bayes' rule and the independence assumption, but hadn't
-seen how much that assumption costs on real, correlated features - the HAR benchmark
-made the Perceptron-vs-NaiveBayes gap (0.963 vs 0.768) concrete rather than theoretical.
-The `var_smoothing` sweep was also a surprise: not that it mattered, but that the
-course-provided default (`1e-9`) was close to the worst choice tested. Still uncertain:
-whether proper cross-validation of `var_smoothing` would move the optimum much.
+seen how much it costs on real, correlated features - the benchmark made the
+Perceptron-vs-NaiveBayes gap (0.963 vs 0.768) concrete. The `var_smoothing` sweep was also
+a surprise: not that it mattered, but that the default (`1e-9`) was near the worst choice
+tested. Still uncertain: whether proper cross-validation would move the optimum much.
 
 ## H. Inquiry trail
 
-<!-- fill in if/when AI is used for this week's post -->
+Three episodes after pre-AI commit `6c9ac95`: (1) verified my NB code against
+`tests/contract/` - 3/3 pass, reproducible; (2) got the benchmark script written (tooling)
+for the `var_smoothing` sweep; (3) got a first draft of this post, grounded in (2)'s
+numbers but not yet rewritten in my own words. Full rows: `AI_USE.md`, W06.
 
 ## Status
 
