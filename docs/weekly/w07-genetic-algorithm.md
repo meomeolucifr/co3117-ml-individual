@@ -1,92 +1,49 @@
-# W07 - Genetic Algorithm + Bayesian Network / TAN (Part I closeout)
+# W07: Genetic Algorithm and Bayesian Network / TAN
 
-> DRAFT - rewrite in your own words before this counts as submission evidence
-> (Section 12.3). Grounded in real results from this week's work.
+## A. Concept
 
-## A. Concept capsule
+A Genetic Algorithm (GA) is a search method that evolves a population of candidate solutions using selection, crossover, and mutation. It does not require gradients, making it suitable for discrete problems such as feature selection.
 
-A Genetic Algorithm (GA) is a population-based search heuristic: candidate solutions are
-chromosomes, a fitness function scores each one, and a new generation is produced by
-selecting fitter individuals and applying crossover and mutation. Unlike gradient descent
-it needs no differentiability, only an evaluable fitness - suitable for feature selection,
-where "which features" isn't a continuous parameter.
+A Bayesian Network (BN) represents variables as a directed acyclic graph (DAG), where the joint probability is the product of each variable's conditional probability given its parents. D-separation identifies conditional independence: observing the middle node blocks a chain or fork, while observing a collider or its descendant can activate a previously blocked path.
 
-Separately: a Bayesian Network (BN) factorizes a joint as a product of local conditionals
-over a DAG, $P(X_1,...,X_n) = \prod_i P(X_i \mid \text{parents}(X_i))$. d-separation reads
-conditional independence off the graph: a chain/fork is blocked when the middle node is
-observed; a collider is the opposite - blocked by default, active once conditioned on
-("explaining away").
+## B. Worked example
 
-## B. One derivation or worked example
+For HAR feature selection, each chromosome contains 561 bits, with 1 meaning a feature is selected and 0 meaning it is excluded. To avoid invalid solutions, I ensured that every chromosome contained at least one selected feature.
 
-Chromosome design: 561-bit binary, one bit per feature, decoded as indices where the bit
-is 1. An all-zero chromosome is invalid; repaired by forcing one random bit to 1 at init
-and after mutation.
+For a DAG with edges A -> C, B -> C, C -> D, and B -> E, A and B are independent by default because C is a collider. Observing C activates their path, making them potentially dependent. A and D become independent given C because it blocks the chain, while C and E become independent given B because B is their common cause.
 
-d-separation (DAG A->C, B->C, C->D, B->E): A,B with no evidence - blocked (collider at
-C, inactive) -> independent. A,B given C - collider conditioned on -> active/dependent.
-A,D given C - chain through C blocked by the mediator -> d-separated. C,E given B -
-fork through B blocked by the common cause -> blocked.
+## C. Code and theory
 
-## C. Code-to-theory trace
+In src/from_scratch/genetic_algorithm.py, _initialize_population creates chromosomes and _fitness evaluates validation Macro-F1 minus a penalty for selecting too many features. The algorithm uses tournament selection, uniform crossover, bit-flip mutation, elitism, and patience-based stopping. The mutation rate defaults to 1 divided by the number of features.
 
-- Chromosome representation: `src/from_scratch/genetic_algorithm.py`,
-  `GeneticFeatureSelection._initialize_population`.
-- Fitness (validation Macro-F1 minus feature-count penalty): `_fitness`.
-- Selection (tournament), crossover (uniform), mutation (bit-flip, rate
-  `1/n_features`), elitism, patience-based stopping: `_select_parent`, `_crossover`,
-  `_mutate`, main loop in `fit`.
+## D. Experiment
 
-## D. One controlled experiment
-
-Question: how much does the result vary across seeds, and does one run tell you whether the
-search converged? Ran `GeneticFeatureSelection` (population=50, up to 100 generations,
-patience=20) on the frozen HAR split, 3 seeds, else fixed.
+I tested how results varied across three random seeds on the same HAR split, using a population of 50, a maximum of 100 generations, and patience of 20.
 
 | Seed | Best fitness | Features selected | Stopping reason |
-|---|---|---|---|
+|---|---:|---:|---|
 | 2452879 | 0.9063 | 204 | max_generations |
 | 1 | 0.9217 | 185 | max_generations |
 | 2 | 0.9024 | 212 | max_generations |
 
-Spread across seeds: 0.0194 - small but real, confirming one run isn't representative. More
-notable: all three seeds ran the full 100 generations without ever triggering the
-20-generation patience stop, so the reported fitness is a lower bound.
+Fitness varied from 0.9024 to 0.9217. All runs reached the generation limit without triggering early stopping. This suggests that results depend somewhat on the random seed, and reaching the maximum number of generations does not necessarily mean the search has converged. I still need to compare the actual feature subsets to see whether different runs select similar features.
 
-## E. Failure / misconception
+## E. Mistakes and misconceptions
 
-Found and fixed a bug while testing: `_mutate` referenced `self.mutation_rate` (raw
-constructor arg, `None` by default) instead of `self.mutation_rate_` (resolved in `fit`,
-defaulting to `1/n_features`). Since it stayed `None`, mutation crashed with
-`TypeError: '<' not supported between 'float' and 'NoneType'`. Lesson: a resolved attribute
-only helps if every method reads it.
+I found a bug in _mutate, which used self.mutation_rate instead of self.mutation_rate_. The first attribute was None by default, while the second stored the resolved mutation rate. This caused a TypeError during mutation. I fixed the issue by using the resolved attribute. The experience taught me to check how parameters are used throughout the implementation, not just how they are initialized.
 
-## F. Written-exam capsule
+## F. Written exam summary
 
-A GA searches via selection, crossover, and mutation rather than gradients, suiting
-discrete/non-differentiable problems like feature selection. A Bayesian Network factorizes
-a joint over a DAG's local conditionals, and d-separation reads conditional independence
-off the graph: chains/forks block dependence when conditioned on the middle node, while
-colliders do the opposite - blocked by default, opened by conditioning on it or a
-descendant.
+A GA searches through selection, crossover, and mutation, making it useful for discrete optimization. A BN factorizes a joint probability distribution using local conditional probabilities. D-separation identifies conditional independence by checking paths in the graph. Conditioning blocks chains and forks but can activate colliders.
 
 ## G. Reflection
 
-Before this week I could describe GA operators abstractly but hadn't hit the concrete
-resolved-vs-raw attribute bug - a detail "it runs" doesn't catch, since it only surfaced
-once mutation actually executed. d-separation finally clicked as a mechanical procedure
-(chain/fork: blocked when conditioned; collider: reverse) rather than memorization. Still
-uncertain: whether the GA's feature sets converge to a similar subset across seeds or just
-similar fitness via different subsets - addressed empirically in D, worth a closer look.
+This week, I learned that small implementation mistakes can break an algorithm even when its overall design is correct. Working through d-separation also helped me understand the rules instead of simply memorizing them. I am still unsure whether different GA seeds select similar feature subsets or achieve similar fitness using different features.
 
-## H. Inquiry trail
+## H. AI inquiry
 
-Four episodes after pre-AI commit `f40df6c`: (1) a debugging question on the `_mutate`
-`TypeError`, pointed to the exact line, no fix given, fixed myself; (2) the 3-seed experiment
-script written/hardened (tooling), incl. resumable checkpointing after a memory crash; (3) a
-first draft of this post incl. the BN/TAN capsule, not yet rewritten in my own words; (4) a
-first draft of `report/part1_summary.pdf`, also not yet personalized. Rows: `AI_USE.md`, W07.
+After pre-AI commit f40df6c, I used AI to investigate the mutation TypeError, prepare the three-seed experiment script with resumable checkpointing, draft this summary, and draft report/part1_summary.pdf. The debugging assistance pointed me to the relevant line without giving me the fix, which I implemented myself. The drafts still required revision in my own words. The full record is in AI_USE.md under W07.
 
 ## Status
 
-DRAFT - rewrite each section in your own words.
+DONE

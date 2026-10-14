@@ -1,94 +1,58 @@
-# W05 - Perceptron and Delta rule
+# W05: Perceptron and Delta Rule
 
-## A. Concept capsule
+## A. Concept
 
-The perceptron is a single-layer linear binary classifier: z = w*x + b, y_hat =
-sign(z). Training is error-driven - weights update only on a misclassified sample, via
-w <- w + n*y_i*x_i. Under the Perceptron Convergence Theorem this halts in finite steps
-if the data is linearly separable; otherwise it never converges. The Delta rule instead
-treats the output as continuous and derives its update from gradient descent on a
-differentiable loss like MSE, updating on every sample in proportion to the error
-magnitude, so it converges to a minimum-error solution on any dataset. The Delta rule is
-also the mechanism that generalizes to backpropagation.
+The Perceptron is a linear binary classifier that updates its weights only when it misclassifies a sample, using w = w + learning_rate * target * input. It converges in finite steps when data is linearly separable but may keep updating otherwise.
 
-## B. One derivation or worked example
+The Delta rule uses gradient descent to minimize a differentiable loss such as MSE. It updates weights according to prediction error and can minimize loss even on non-separable data, although perfect classification is not guaranteed. This principle also underlies backpropagation.
 
-AND gate, bipolar encoding, n=0.1, w_0=(0,0), b_0=0:
+## B. Worked example
 
-| Step | x | target | z | correct? | update |
+I tested a bipolar AND gate with learning rate 0.1, initial weights (0, 0), and bias 0.
+
+| Step | Input | Target | Output z | Result | Update |
 |---|---|---|---|---|---|
-| 1 | (1,1) | +1 | 0 | +1, correct | none |
-| 2 | (1,-1) | -1 | 0 | +1, wrong | w += 0.1*(-1)*(1,-1) = (-0.1,0.1); b -= 0.1 |
-| 3 | (-1,1) | -1 | 0.1 | +1, wrong | w += 0.1*(-1)*(-1,1) = (0,0); b -= 0.1 |
-| 4 | (-1,-1) | -1 | -0.2 | -1, correct | none |
+| 1 | (1,1) | +1 | 0 | Correct | None |
+| 2 | (1,-1) | -1 | 0 | Wrong | w=(-0.1, 0.1), b=-0.1 |
+| 3 | (-1,1) | -1 | 0.1 | Wrong | w=(0, 0), b=-0.2 |
+| 4 | (-1,-1) | -1 | -0.2 | Correct | None |
 
-End of epoch 1: w=(0,0), b=-0.2. Epoch 2 has one more wrong case ((1,1), fixed once),
-then every remaining pass is correct (verified through step 12), so the perceptron
-converges on this separable toy set.
+The model made additional corrections in the second epoch and eventually converged on this linearly separable dataset.
 
-## C. Code-to-theory trace
+## C. Code and theory
 
-- Perceptron update rule `w <- w + n*y_i*x_i`, only on misclassification:
-  `src/from_scratch/perceptron.py`, `perceptron_update`.
-- Convergence / early-stopping: `Perceptron.fit`.
-- One-vs-rest extension to 6 HAR classes: `OneVsRestPerceptron`.
+My standard update rule is implemented in src/from_scratch/perceptron.py, while Perceptron.fit handles training and convergence checks. OneVsRestPerceptron extends the classifier to six HAR classes.
 
-## D. One controlled experiment
+I initially assumed the ML-From-Scratch Perceptron used the same rule. After reading its source, I found it uses Sigmoid activation, SquareLoss, and gradient descent, making it closer to the Delta rule.
 
-Question: does the perceptron still converge once a linearly-separable set is nudged
-away from separability by flipping labels? Controlled variable: number of flipped
-labels in a synthetic 2-blob set (120 samples, seed 2452879); lr=0.1, epoch cap=200
-fixed. Script: `experiments/part1_pre_midterm/w05_perceptron_convergence.py`.
+## D. Experiment
 
-| Flipped | Converged? | Epochs | Train acc |
-|---|---|---|---|
+I tested convergence on 120 synthetic two-blob samples using seed 2452879, learning rate 0.1, and a 200-epoch limit. I varied the number of flipped labels.
+
+| Flipped labels | Converged? | Epochs | Accuracy |
+|---:|---|---:|---:|
 | 0 | Yes | 2 | 1.000 |
 | 1 | No | 200 | 0.992 |
 | 8 | No | 200 | 0.850 |
 | 20 | No | 200 | 0.833 |
 
-Result: the clean set converges in 2 epochs; one flipped label is enough to make
-`converged` stay False for every noise level tested, matching the "oscillates forever"
-prediction from drill Q3. Accuracy stays high at low noise but is non-monotonic, since
-the perceptron just stops wherever it is in its oscillation cycle at the epoch cap.
+The clean dataset converged in two epochs, while every noisy setting reached the epoch limit without convergence. Even one flipped label left accuracy at 99.2%, showing that high accuracy does not necessarily mean convergence. These results apply to this dataset and setup.
 
-## E. Failure / misconception
+## E. Mistakes and misconceptions
 
-I assumed ML-From-Scratch's `Perceptron` implements the same error-correction rule I
-did. It doesn't: it uses Sigmoid activation and SquareLoss, i.e. a gradient-descent
-(Delta rule) learner. Separately: XOR is not linearly separable (bipolar points sit on
-opposite diagonal corners of the unit square), so no single perceptron of either kind
-can solve it without a hidden layer.
+I learned that identical class names do not guarantee identical algorithms. My implementation already used the standard Perceptron rule, so no changes were needed. I also reviewed why a single Perceptron cannot solve XOR: its classes cannot be separated by one linear boundary, regardless of the learning rule. A hidden layer is needed for a more complex decision boundary.
 
-## F. Written-exam capsule
+## F. Written exam summary
 
-The perceptron adjusts weights only on misclassification, shifting the boundary toward
-the correct side; it converges in finite steps iff the data is linearly separable, else
-it oscillates forever. The Delta rule replaces this with a continuous gradient-descent
-update proportional to the error on every example, converging to a minimum-error
-solution even on non-separable data.
+The Perceptron updates only on misclassified samples and converges when data is linearly separable. The Delta rule uses gradient descent to minimize prediction loss and can handle non-separable data, though errors may remain.
 
 ## G. Reflection
 
-Before this week I could state the perceptron update formula but not explain why
-ML-From-Scratch's same-named class behaves so differently. Now I can connect that
-gradient-descent update to the Delta rule instead of assuming a shared name means a
-shared algorithm. Still uncertain: how sensitive one-vs-rest tie-breaking is on real,
-overlapping HAR classes rather than a toy set.
+This week, I learned to distinguish algorithms by their actual update rules rather than their names. I still want to investigate how tie-breaking affects OneVsRestPerceptron on overlapping HAR classes.
 
-## H. Inquiry trail (mandatory whenever AI is used)
+## H. AI inquiry
 
-- Question: does ML-From-Scratch's Perceptron implement the same update rule as mine?
-- Pre-AI evidence: handwritten drill and own pre-reference Perceptron implementation,
-  both written before consulting the reference code.
-- AI tool: Claude Code.
-- Prompt purpose: map the ML-From-Scratch code to the drill theory, find divergences.
-- Hint/question received: the reference class runs full-batch gradient descent with
-  Sigmoid activation and SquareLoss rather than the error-driven update I implemented.
-- Verification source: read the mlfromscratch source directly, line by line.
-- What changed: corrected the assumption that same class name means same algorithm; no
-  code change needed, my own Perceptron already implements the correct rule.
-- Closed-book reproduction: Not yet.
+I used Claude Code to compare my implementation with ML-From-Scratch after completing my own drill and code. I verified its explanation by reading the source line by line. No code changes were needed. I have not yet reproduced the derivations from memory, so a closed-book review remains.
 
 ## Status
 
